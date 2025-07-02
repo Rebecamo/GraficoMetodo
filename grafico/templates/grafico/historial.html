@@ -1,0 +1,259 @@
+{% load static %}
+{% load l10n %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Historial de Problemas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap y estilos -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #944e63, #ce796b);
+      font-family: 'Segoe UI', sans-serif;
+      color: #2e2e2e;
+      min-height: 100vh;
+    }
+
+    .custom-navbar {
+      background-color: #944e63;
+    }
+
+    .custom-navbar .nav-link,
+    .custom-navbar .navbar-brand {
+      color: #ffffff !important;
+    }
+
+    .custom-navbar .nav-link:hover {
+      color: #ce796b !important;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 25px;
+      margin-left: 0.5rem;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 3.5px;
+      background-color: white;
+      border-radius: 50%;
+      transition: .4s;
+    }
+
+    input:checked + .slider { background-color: #ce796b; }
+    input:checked + .slider:before { transform: translateX(26px); }
+
+    .theme-icon {
+      font-size: 1.2rem;
+      color: white;
+      margin-right: 0.5rem;
+    }
+
+    .card {
+      background-color: #faf3f0;
+      border-radius: 1.5rem;
+      box-shadow: 0 0 30px rgba(201, 121, 107, 0.4);
+      padding: 2rem;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .table thead {
+      background-color: #ce796b;
+      color: #fff;
+    }
+
+    footer {
+      background: #944e63;
+      color: #faf3f0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    /* Modo oscuro */
+    body.dark-mode {
+      background-color: #1e1e1e !important;
+      background-image: none !important;
+      color: #ffffff !important;
+    }
+
+    body.dark-mode .custom-navbar,
+    body.dark-mode footer {
+      background-color: #944e63 !important;
+    }
+
+    body.dark-mode .card {
+      background-color: #1a1a1a !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 20px rgba(206, 121, 107, 0.6);
+    }
+
+    body.dark-mode .table {
+      background-color: #1a1a1a;
+      color: #ffffff;
+    }
+
+    body.dark-mode .table thead {
+      background-color: #944e63 !important;
+      color: #ffffff !important;
+    }
+
+    body.dark-mode td {
+      background-color: #1e1e1e;
+      color: #ffffff;
+    }
+
+    .btn-ver { background-color: #42a5f5; color: #fff; }
+    .btn-ver:hover { background-color: #1e88e5; }
+
+    .btn-editar { background-color: #ffb74d; color: #fff; }
+    .btn-editar:hover { background-color: #fb8c00; }
+
+    .btn-duplicar { background-color: #81c784; color: #fff; }
+    .btn-duplicar:hover { background-color: #388e3c; }
+  </style>
+</head>
+
+<body>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg shadow fixed-top custom-navbar">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'index' %}">Método Gráfico</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'crear_problema' %}">Nuevo problema</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'historial' %}">Historial</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'ayuda' %}">Ayuda</a></li>
+      </ul>
+      <ul class="navbar-nav ms-auto align-items-center">
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}">Registrarse</a></li>
+        {% endif %}
+        <li class="nav-item d-flex align-items-center ms-3">
+          <i id="themeIcon" class="bi bi-sun-fill"></i>
+          <label class="switch mb-0" aria-label="Alternar modo oscuro">
+            <input type="checkbox" id="themeToggle" />
+            <span class="slider"></span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENIDO -->
+<div class="container my-5 pt-5">
+  <div class="card mt-4">
+    <div class="card-body">
+      <h3 class="text-center mb-4 fw-bold">Historial de Problemas</h3>
+
+      <div class="table-responsive">
+        <table class="table text-center align-middle">
+          <thead>
+            <tr>
+              <th>Función Objetivo</th>
+              <th>Fecha y Hora</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for problema in problemas %}
+              <tr>
+                <td>Z={{ problema.funcion_objetivo }}</td>
+                <td>{{ problema.creado|date:"d/m/Y H:i" }}</td>
+                <td>
+                  <a href="{% url 'resultado' problema.id %}" class="btn btn-ver btn-sm me-1">Ver</a>
+                  <a href="{% url 'editar_problema' problema.id %}" class="btn btn-editar btn-sm me-1">Editar</a>
+                  <a href="{% url 'duplicar_problema' problema.id %}" class="btn btn-duplicar btn-sm">Duplicar</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3">No has creado problemas aún.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="mt-5">
+  <div class="container text-center text-white">
+    <p class="mb-1">© 2025 Método Gráfico. Proyecto académico - Todos los derechos reservados.</p>
+    <small>
+      Osiris Ivania Andrade Campos — AC21059<br>
+      Vilma Mercedes Barrios Reyes — BR21039<br>
+      Dayna Rebeca Moreno Santiago — MS21017
+    </small>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const icon = document.getElementById('themeIcon');
+    const toggle = document.getElementById('themeToggle');
+
+    const updateTheme = (isDark) => {
+      document.body.classList.toggle('dark-mode', isDark);
+      if (icon) {
+        icon.classList.toggle('bi-moon-fill', isDark);
+        icon.classList.toggle('bi-sun-fill', !isDark);
+      }
+    };
+
+    const saved = localStorage.getItem('darkMode') === 'true';
+    if (toggle) toggle.checked = saved;
+    updateTheme(saved);
+
+    if (toggle) {
+      toggle.addEventListener('change', () => {
+        const isDark = toggle.checked;
+        localStorage.setItem('darkMode', isDark);
+        updateTheme(isDark);
+      });
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'darkMode') {
+        const isDark = e.newValue === 'true';
+        if (toggle) toggle.checked = isDark;
+        updateTheme(isDark);
+      }
+    });
+  });
+</script>
+</body>
+</html>

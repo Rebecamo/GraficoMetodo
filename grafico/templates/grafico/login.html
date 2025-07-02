@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iniciar sesión</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #944e63, #ce796b);
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      color: #2e2e2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .login-card {
+      background: #faf3f0;
+      border-radius: 1.5rem;
+      box-shadow: 0 0 30px rgba(201, 121, 107, 0.3);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      animation: fadeIn 1s ease-in-out;
+      text-align: center;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      color: #2e2e2e;
+    }
+
+    .login-title {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      color: #944e63;
+    }
+
+    .form-control {
+      border-radius: 1rem;
+      text-align: center;
+      border: 2px solid #ce796b;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 8px rgba(206, 121, 107, 0.6);
+      border-color: #944e63;
+      outline: none;
+    }
+
+    .btn-primary {
+      background-color: #ce796b;
+      border: none;
+      border-radius: 1rem;
+      padding: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #b05f53;
+      color: #fff;
+    }
+
+    .register-link {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #2e2e2e;
+    }
+    .register-link a {
+      color: #944e63;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .register-link a:hover {
+      text-decoration: underline;
+      color: #ce796b;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    body.dark-mode {
+      background-color: #2e2e2e !important;
+      background-image: none !important;
+      color: #faf3f0 !important;
+    }
+
+    body.dark-mode .login-card {
+      background-color: #1a1a1a !important;
+      color: #faf3f0 !important;
+      box-shadow: 0 0 20px rgba(206, 121, 107, 0.6);
+    }
+
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea {
+      background-color: #2e2e2e !important;
+      color: #faf3f0 !important;
+      border: 2px solid #ce796b !important;
+    }
+
+    body.dark-mode input::placeholder {
+      color: #f0d7d2 !important;
+    }
+
+    body.dark-mode .form-label,
+    body.dark-mode label,
+    body.dark-mode .helptext,
+    body.dark-mode ul li {
+      color: #f0d7d2 !important;
+    }
+
+    body.dark-mode .btn-primary {
+      background-color: #ce796b !important;
+      color: #faf3f0 !important;
+    }
+    body.dark-mode .btn-primary:hover {
+      background-color: #b05f53 !important;
+      color: #faf3f0 !important;
+    }
+
+    body.dark-mode .register-link {
+      color: #f0d7d2 !important;
+    }
+    body.dark-mode .register-link a {
+      color: #ce796b !important;
+    }
+    body.dark-mode .register-link a:hover {
+      color: #b05f53 !important;
+    }
+
+    /* Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 25px;
+      margin-left: 0.5rem;
+    }
+
+    .switch input {
+      opacity: 0; width: 0; height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 3.5px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #ce796b;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .theme-icon {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-right: 8px;
+      transition: color 0.3s;
+    }
+
+    .theme-icon:hover {
+      color: #ce796b;
+    }
+  </style>
+</head>
+<body>
+ <nav class="navbar navbar-expand-lg shadow fixed-top custom-navbar" style="background-color: #944e63;">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-white" href="{% url 'index' %}">Método Gráfico</a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'crear_problema' %}">Nuevo problema</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'historial' %}">Historial</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'ayuda' %}">Ayuda</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto d-flex align-items-center">
+        {% if user.is_authenticated %}
+          <li class="nav-item me-3">
+            <a class="nav-link text-white" href="{% url 'logout' %}">Cerrar sesión</a>
+          </li>
+        {% else %}
+          <li class="nav-item me-3">
+            <a class="nav-link text-white" href="{% url 'login' %}">Iniciar sesión</a>
+          </li>
+          <li class="nav-item me-3">
+            <a class="nav-link text-white" href="{% url 'registro' %}">Registrarse</a>
+          </li>
+        {% endif %}
+        <li class="nav-item d-flex align-items-center">
+          <i id="themeIcon" class="bi bi-sun theme-icon me-2"></i>
+          <label class="switch mb-0">
+            <input type="checkbox" id="themeToggle" />
+            <span class="slider"></span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <main class="login-card mt-5" role="main" aria-label="Formulario de inicio de sesión">
+    <h2 class="login-title">Iniciar sesión</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="id_username" class="form-label">Nombre de usuario:</label>
+        <input type="text" name="username" class="form-control text-center" id="id_username" required autocomplete="username" />
+      </div>
+      <div class="mb-3">
+        <label for="id_password" class="form-label">Contraseña:</label>
+        <input type="password" name="password" class="form-control text-center" id="id_password" required autocomplete="current-password" />
+      </div>
+      <div class="d-grid mt-3">
+        <button type="submit" class="btn btn-primary">Entrar</button>
+      </div>
+    </form>
+    <div class="register-link">
+      <a href="{% url 'registro' %}">¿No tienes cuenta? <strong>Regístrate aquí</strong></a>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        toggle.checked = true;
+        icon.classList.replace('bi-sun', 'bi-moon-stars');
+      }
+
+      toggle.addEventListener('change', () => {
+        const isDark = toggle.checked;
+        document.body.classList.toggle('dark-mode', isDark);
+        localStorage.setItem('darkMode', isDark);
+        icon.classList.toggle('bi-sun', !isDark);
+        icon.classList.toggle('bi-moon-stars', isDark);
+      });
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'darkMode') {
+          const isDark = e.newValue === 'true';
+          document.body.classList.toggle('dark-mode', isDark);
+          toggle.checked = isDark;
+          icon.classList.toggle('bi-sun', !isDark);
+          icon.classList.toggle('bi-moon-stars', isDark);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

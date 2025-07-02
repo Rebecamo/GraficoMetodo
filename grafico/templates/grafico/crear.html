@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Nuevo Problema</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #944e63, #ce796b);
+      font-family: 'Segoe UI', sans-serif;
+      color: #2e2e2e;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1 0 auto;
+    }
+
+    footer {
+      flex-shrink: 0;
+      background-color: #944e63;
+      color: #faf3f0;
+      padding: 20px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .form-card {
+      background: #faf3f0;
+      border-radius: 1.5rem;
+      box-shadow: 0 0 30px rgba(201, 121, 107, 0.3);
+      padding: 2rem 2.5rem;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .form-title {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      text-align: center;
+      color: #944e63;
+    }
+
+    .form-control {
+      border-radius: 1rem;
+      border: 2px solid #ce796b;
+      text-align: center;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 8px rgba(206, 121, 107, 0.6);
+      border-color: #944e63;
+      outline: none;
+    }
+
+    .btn-success {
+      background-color: #ce796b;
+      border: none;
+      border-radius: 1rem;
+      padding: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background-color: #b05f53;
+    }
+
+    .btn-secondary {
+      background-color: #944e63;
+      border: none;
+      border-radius: 1rem;
+      padding: 0.75rem;
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      background-color: #73394b;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 25px;
+      margin-left: 1rem;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 3.5px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider { background-color: #ce796b; }
+
+    input:checked + .slider:before { transform: translateX(26px); }
+
+    body.dark-mode {
+      background-color: #1e1e1e !important;
+      background-image: none !important;
+      color: #faf3f0 !important;
+    }
+
+    body.dark-mode .form-card {
+      background-color: #1a1a1a;
+      box-shadow: 0 0 20px rgba(206, 121, 107, 0.6);
+    }
+
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea {
+      background-color: #2e2e2e;
+      color: #faf3f0;
+      border: 2px solid #ce796b;
+    }
+
+    body.dark-mode input::placeholder {
+      color: #f0d7d2;
+    }
+
+    body.dark-mode .form-label,
+    body.dark-mode label {
+      color: #f0d7d2;
+    }
+
+    body.dark-mode .btn-success {
+      background-color: #ce796b;
+    }
+
+    body.dark-mode .btn-success:hover {
+      background-color: #b05f53;
+    }
+
+    body.dark-mode .btn-secondary {
+      background-color: #944e63;
+    }
+
+    body.dark-mode .btn-secondary:hover {
+      background-color: #73394b;
+    }
+  </style>
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg shadow fixed-top" style="background-color: #944e63;">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-white" href="{% url 'index' %}">Método Gráfico</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link text-white" href="{% url 'crear_problema' %}">Nuevo problema</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{% url 'historial' %}">Historial</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{% url 'ayuda' %}">Ayuda</a></li>
+      </ul>
+
+      <!-- Auth -->
+      <ul class="navbar-nav ms-auto align-items-center">
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link text-white" href="{% url 'logout' %}">Cerrar sesión</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link text-white" href="{% url 'login' %}">Iniciar sesión</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="{% url 'registro' %}">Registrarse</a></li>
+        {% endif %}
+        <li class="nav-item d-flex align-items-center ms-3">
+          <i id="themeIcon" class="bi bi-sun-fill text-white me-2"></i>
+          <label class="switch mb-0" aria-label="Alternar modo oscuro">
+            <input type="checkbox" id="themeToggle" />
+            <span class="slider"></span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- FORMULARIO -->
+<main class="container my-5 pt-5">
+  <div class="form-card mx-auto" style="max-width: 720px;">
+    <h2 class="form-title">Crear nuevo problema</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-success">Resolver</button>
+        <a href="{% url 'index' %}" class="btn btn-secondary">Volver</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p class="mb-1">© 2025 Método Gráfico. Proyecto académico - Todos los derechos reservados.</p>
+  <small>
+    Osiris Ivania Andrade Campos — AC21059<br>
+    Vilma Mercedes Barrios Reyes — BR21039<br>
+    Dayna Rebeca Moreno Santiago — MS21017
+  </small>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('themeToggle');
+    const icon = document.getElementById('themeIcon');
+
+    function setIcon(isDark) {
+      icon.classList.remove('bi-sun-fill', 'bi-moon-fill');
+      icon.classList.add(isDark ? 'bi-moon-fill' : 'bi-sun-fill');
+    }
+
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    document.body.classList.toggle('dark-mode', darkMode);
+    toggle.checked = darkMode;
+    setIcon(darkMode);
+
+    toggle.addEventListener('change', () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', isDark);
+      setIcon(isDark);
+    });
+  });
+</script>
+
+</body>
+</html>
